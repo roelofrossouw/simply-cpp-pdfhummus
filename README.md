@@ -32,7 +32,7 @@ packages (`simply-cpp-pdf-dev` depends on them).
 
 ## Publishing a new version
 
-Like `simply-cpp-lunasvg`, this compiles from source, so the result is tied
+Like `simply-cpp-oatpp`, this compiles from source, so the result is tied
 to whichever Ubuntu release built it: `scripts/deploy.sh` runs
 `scripts/publish.sh` separately on jammy, noble and resolute. The package's
 `Depends:` comes from `dpkg-shlibdeps`, since the library package names differ
