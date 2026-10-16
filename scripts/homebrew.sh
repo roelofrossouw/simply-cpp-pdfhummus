@@ -2,7 +2,7 @@
 #~~~~~~~~~~
 # Writes the Homebrew formula simply-cpp-pdfhummus.rb for the PDF-Writer
 # version in VERSION.txt: Homebrew has no PDFHummus of its own (unlike
-# lunasvg), so macOS builds it from the upstream release tarball against
+# OpenCV, say), so macOS builds it from the upstream release tarball against
 # Homebrew's FreeType, libjpeg, libpng, libtiff and OpenSSL.
 #
 # Usage: scripts/homebrew.sh [formula directory]

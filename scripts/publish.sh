@@ -5,7 +5,7 @@
 # libpng and OpenSSL (none of PDFHummus's bundled copies), and packages and
 # publishes it as simply-cpp-pdfhummus for apt.
 #
-# Like simply-cpp-lunasvg this is a real compile, so the result is tied to
+# Like simply-cpp-oatpp this is a real compile, so the result is tied to
 # whichever Ubuntu release built it - run this separately on each distro's own
 # server (deploy.sh does that).
 #
