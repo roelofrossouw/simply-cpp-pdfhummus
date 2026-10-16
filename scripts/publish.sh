@@ -24,7 +24,10 @@ fi
 version=$(tr -d ' \t\n' < VERSION.txt)
 ubuntu_codename=$(lsb_release -sc)
 package="simply-cpp-pdfhummus"
-package_version="${version}~${ubuntu_codename}"
+# A packaging revision (REVISION.txt) when the same upstream version is packaged again, such as
+# with a copyright file: 3.5.0-1~noble sorts after 3.5.0~noble.
+revision=$( [ -f REVISION.txt ] && tr -d ' \t\n' < REVISION.txt || true)
+package_version="${version}${revision:+-$revision}~${ubuntu_codename}"
 deb_file="${package}_${package_version}_amd64.deb"
 
 # dpkg-dev for dpkg-shlibdeps, which works out the runtime Depends: below.
@@ -93,6 +96,20 @@ ldconfig
 EOF
 
 chmod 755 pkg/DEBIAN/postinst pkg/DEBIAN/postrm
+
+# copyright <package directory> <package name>: upstream's licence, which it asks to ship with the
+# binaries, where Debian keeps one (/usr/share/doc/<package>/copyright).
+copyright() {
+    install -d "$1/usr/share/doc/$2"
+    {
+        echo "$2 packages PDFHummus (PDF-Writer) $version (https://github.com/galkahana/PDF-Writer), licensed under Apache-2.0."
+        echo "The packaging scripts (https://github.com/roelofrossouw/simply-cpp-pdfhummus) are Apache-2.0."
+        echo
+        echo "----- PDFHummus: LICENSE -----"
+        cat work/pdfhummus-src/LICENSE
+    } > "$1/usr/share/doc/$2/copyright"
+}
+copyright pkg "$package"
 
 dpkg-deb --build --root-owner-group pkg "$deb_file"
 dpkg-deb --field "$deb_file" Depends
