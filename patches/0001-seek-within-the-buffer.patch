@@ -1,0 +1,22 @@
+diff --git a/PDFWriter/InputBufferedStream.cpp b/PDFWriter/InputBufferedStream.cpp
+index cd65f22..fc4a6fc 100644
+--- a/PDFWriter/InputBufferedStream.cpp
++++ b/PDFWriter/InputBufferedStream.cpp
+@@ -139,6 +139,17 @@ void InputBufferedStream::Skip(LongBufferSizeType inSkipSize)
+ 
+ void InputBufferedStream::SetPosition(LongFilePositionType inOffsetFromStart)
+ {
++	// Within what the buffer holds: move in it, rather than reading it all again.
++	if(mLastAvailableIndex != mBuffer)
++	{
++		LongFilePositionType bufferEnd = mSourceStream->GetCurrentPosition();
++		LongFilePositionType bufferStart = bufferEnd - (mLastAvailableIndex - mBuffer);
++		if(inOffsetFromStart >= bufferStart && inOffsetFromStart <= bufferEnd)
++		{
++			mCurrentBufferIndex = mBuffer + (inOffsetFromStart - bufferStart);
++			return;
++		}
++	}
+ 	mLastAvailableIndex = mCurrentBufferIndex = mBuffer;
+ 	mSourceStream->SetPosition(inOffsetFromStart);
+ }
