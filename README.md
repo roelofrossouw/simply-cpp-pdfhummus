@@ -4,7 +4,8 @@ PDFHummus ([PDF-Writer](https://github.com/galkahana/PDF-Writer), Apache-2.0),
 built from source and repackaged for apt and Homebrew.
 
 This exists so `simply-cpp-pdf` can link PDFHummus as a normal system library
-instead of carrying its source. There's no code of ours here: it builds
+instead of carrying its source. Our only code is in `patches/`: changes to
+upstream, applied before it's built (for both apt and Homebrew); it builds
 PDFHummus as a shared library against the system's own zlib, FreeType,
 libjpeg, libtiff, libpng and OpenSSL (none of PDFHummus's bundled copies; the
 build fails if one creeps in) and packages the result.
@@ -51,3 +52,15 @@ without publishing it, for trying a new version out.
 For Homebrew, `scripts/homebrew.sh` rewrites the tap's
 `Formula/simply-cpp-pdfhummus.rb` for the version in `VERSION.txt`; committing
 and pushing the tap publishes it.
+
+## Patches
+
+`patches/*.patch` are applied in order to upstream's source before it's built, by
+`scripts/publish.sh` and by the Homebrew formula (`patch :DATA`).
+
+- `0001-seek-within-the-buffer.patch`: `InputBufferedStream::SetPosition()` moves within its
+  buffer when the position is already in it, instead of discarding the buffer and reading it
+  (256 KB) again. Embedding a TrueType font seeks back and forth thousands of times, so a 60-page
+  PDF read about 2.7 GB to embed one font: 2.3 s instead of 0.85 s on the build servers. Worth
+  offering upstream.
+

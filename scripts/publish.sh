@@ -42,6 +42,13 @@ if [ ! -d "work/pdfhummus-src" ] || [ "$(git -C work/pdfhummus-src describe --ta
     echo "Cloning PDF-Writer v$version"
     git clone --branch "v$version" --depth 1 https://github.com/galkahana/PDF-Writer.git work/pdfhummus-src
 fi
+# Our changes to upstream (patches/, in order), on a clean checkout each time.
+git -C work/pdfhummus-src checkout -q -- .
+for patch in patches/*.patch; do
+    [ -f "$patch" ] || continue
+    echo "Applying $patch"
+    git -C work/pdfhummus-src apply "$(pwd)/$patch" || exit 1
+done
 
 # USE_UNBUNDLED_FALLBACK_BUNDLED only so PDFHummus doesn't insist on a system
 # libaesgm: OpenSSL does its AES instead. The check after the install makes

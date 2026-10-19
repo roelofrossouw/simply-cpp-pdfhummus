@@ -44,6 +44,9 @@ class SimplyCppPdfhummus < Formula
   depends_on "openssl@3"
   uses_from_macos "zlib"
 
+  # Our changes to upstream (the suite module's patches/), after __END__.
+  patch :DATA
+
   def install
     # USE_UNBUNDLED_FALLBACK_BUNDLED only so it doesn't insist on a system libaesgm:
     # OpenSSL does its AES instead. Everything else comes from Homebrew.
@@ -62,4 +65,9 @@ class SimplyCppPdfhummus < Formula
   end
 end
 EOF
+# The patches, which "patch :DATA" reads from after __END__.
+{
+    echo "__END__"
+    cat "$scriptpath"/../patches/*.patch
+} >> "$formula_dir/simply-cpp-pdfhummus.rb"
 echo "Wrote $formula_dir/simply-cpp-pdfhummus.rb"
